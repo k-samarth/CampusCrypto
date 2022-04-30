@@ -14,10 +14,7 @@ const Header = ({address}) => {
         <Button>
           Send/Receive
         </Button>
-        <Button>
-          Wallet Status
-          {address}
-        </Button>
+        
       </ButtonsContainer>
     </Wrapper>
     
