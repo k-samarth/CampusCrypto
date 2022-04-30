@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Header = () => {
+const Header = ({address}) => {
   return (
     <Wrapper>
       <Title>
@@ -13,6 +13,10 @@ const Header = () => {
         </Button>
         <Button>
           Send/Receive
+        </Button>
+        <Button>
+          Wallet Status
+          {address}
         </Button>
       </ButtonsContainer>
     </Wrapper>
