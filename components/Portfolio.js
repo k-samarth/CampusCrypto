@@ -6,6 +6,7 @@ import Coin from "./Coin";
 const Portfolio = () => {
     return (
         <Wrapper>
+            <Content>
             <PortfolioTable>
                 <TableItem>
                     <Title>
@@ -32,6 +33,7 @@ const Portfolio = () => {
                     ))}</div>
                 </Table>
             </PortfolioTable>
+            </Content>
         </Wrapper>
     )
 }

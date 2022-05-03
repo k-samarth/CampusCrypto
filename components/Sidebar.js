@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import CCLogo from '../assets/CAMPUS.png'
-
+import Image from 'next/image'
+import {navItems} from '../static/navItems'
 const Sidebar = () => {
   return (
     <Wrapper>
@@ -10,28 +11,41 @@ const Sidebar = () => {
                 <Image src={CCLogo } alt='CampusCrypto Logo'/>
             </Logo>
         </LogoContainer>
+        <NavItemsContainer>
+            {navItems.map((item,index)=>(
+                <NavItem key={index}>
+                    <NavIcon>
+                        {item.icon}
+                    </NavIcon>
+                    <NavTitle>
+                        {item.title}
+                    </NavTitle>
+                </NavItem>
+            ))}
+        </NavItemsContainer>
     </Wrapper>
-  )
+    )
 }
 
 export default Sidebar
 
 const Wrapper = styled.div`
-    height: calc(100vh);
+    height: calc(10vh);
     border-right: 1px solid #282b2f;
-    width: calc(22rem - 16px - 16px);
-    padding: 0 1 rem;
+    width: calc(22rem - 5px - 5px);
+    padding: 0 0 rem;
+    margin-left: 0.5px;
 `
 const LogoContainer = styled.div`
-    margin: 1.5rem 0;
+    margin: 0.0rem 0;
 `
 const Logo = styled.div`
-    width:44%;
+    width:50%;
     object-fit: contain;
-    margin-left: 1.5rem;
+    margin-left: 0.0rem;
 `
 const NavItemsContainer = styled.div`
-    margin-top: 3rem;
+    margin-top: 1rem;
 
     &:hover{
         cursor: pointer;
@@ -41,11 +55,11 @@ const NavItemsContainer = styled.div`
 const NavItem = styled.div`
     display: flex;
     align-items: center;
-    font-size: 1.3rem;
-    border-radius: 500;
+    font-size: 1rem;
+    border-radius: 500px;
     margin-bottom: 1.5rem;
-    height: 4rem;
-
+    height: 2rem;
+    
     &:hover{
         background-color : #141519;
     }
@@ -58,4 +72,8 @@ const NavIcon = styled.div`
     margin: 0 1rem;
     display: grid;
     place-items: center;
+`
+
+const NavTitle = styled.div`
+    
 `
