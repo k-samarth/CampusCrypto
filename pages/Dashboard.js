@@ -24,7 +24,7 @@ const Wrapper = styled.div`
   width: 100vh;
   background-color: #0a0b0d;
   color: white;
-  overflow: hidden;
+  overflow: visible;
 `
 const MainContainer = styled.div`
   flex: 1;
