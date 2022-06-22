@@ -39,8 +39,12 @@ const Dashboard = ({ address }) => {
       sanityTokens.map(tokenItem => {
         const currentToken = sdk.getTokenModule(tokenItem.contractAddress)
 
-        setTwTokens(prevState => [...prevState, currentToken])
+        setTwTokens((prevState) => {
+          console.log(prevState)
+          return [...prevState, currentToken]
+        })
       })
+      
     }
   }, [sanityTokens])
 

@@ -22,7 +22,8 @@ const Portfolio = ({ twTokens, sanityTokens, walletAddress }) => {
       const totalBalance = await Promise.all(
         twTokens.map(async token=>{
           const balance = await token.balanceOf(walletAddress)
-          return Number(balance.displayValue)*tokenToINR[token.address]
+
+          return Number((Number(balance.displayValue)*tokenToINR[token.address])/2)
         })
       )
 

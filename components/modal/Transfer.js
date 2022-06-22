@@ -1,18 +1,66 @@
-import React from 'react'
+import React,{ useState } from 'react'
 import styled from 'styled-components'
+import { FaWallet } from 'react-icons/fa'
 
 const Transfer = () => {
+  const {amount, setAmount} = React.useState()
+  const {recipient, setRecipient} = React.useState() 
+
   return (
     <Wrapper>
         <Amount>
             <FlexInputContainer>
-                <FlexInput placeholder='0' type='number'/>
+                <FlexInput 
+                  placeholder='0' 
+                  type='number' 
+                  value={amount}
+                  onChange={e => setAmount(e.target.value)}
+                />
                 <span>SCEM</span>
             </FlexInputContainer>
-            <Warning style={{color:'3' && '#0a0b0d'}}>
+            <Warning style={{color: amount && '#0a0b0d'}}>
                 Amount is a required field
             </Warning>
         </Amount>
+        <TransferForm>
+          <Row>
+            <FieldName>
+              To
+            </FieldName>
+            <Icon>
+              <FaWallet />
+            </Icon>
+            <Recipient 
+              placeholder='Address' 
+              value={recipient}
+              onChange={e => setRecipient(e.target.value)}
+            />
+          </Row>
+          <Divider/>
+          <Row>
+            <FieldName>
+              Pay With
+            </FieldName>
+            <CoinSelectList>
+              <Icon>
+                <img src="../../assets/CAMPUS.png" alt='image' srcSet='../../assets/CAMPUS.png'/>
+              </Icon>
+              <CoinName>Ethereum</CoinName>
+            </CoinSelectList>
+          </Row>
+        </TransferForm>
+        <Row>
+          <Continue>
+            Continue
+          </Continue>
+        </Row>
+        <Row>
+          <BalanceTitle>
+            ETH Balance
+          </BalanceTitle>
+          <Balance>1.20 ETH</Balance>
+        </Row>
+
     </Wrapper>
   )
 }
