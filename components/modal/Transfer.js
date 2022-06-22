@@ -1,66 +1,106 @@
-import React,{ useState } from 'react'
 import styled from 'styled-components'
 import { FaWallet } from 'react-icons/fa'
+import { useEffect, useState } from 'react'
+import imageUrlBuilder from '@sanity/image-url'
+import { client } from '../../lib/sanity'
 
-const Transfer = () => {
-  const {amount, setAmount} = React.useState()
-  const {recipient, setRecipient} = React.useState() 
+const Transfer = ({ setAction, twTokens, selectedToken, walletAddress }) => {
+  const [amount, setAmount] = useState('')
+  const [recipient, setRecipient] = useState('')
+  const [sender] = useState(walletAddress)
+  const [builder] = useState(imageUrlBuilder(client))
+  const [activeTwToken, setActiveTwToken] = useState()
+  const [imageUrl, setImageUrl] = useState(null)
+  const [balance, setBalance] = useState('Fetching...')
+
+  useEffect(() => {
+    twTokens.map(token => {
+      if (token.address === selectedToken.contractAddress) {
+        setActiveTwToken(token)
+      }
+    })
+  }, [twTokens, selectedToken])
+
+  useEffect(() => {
+    const getBalance = async () => {
+      const balance = await activeTwToken.balanceOf(sender)
+      setBalance(balance.displayValue)
+    }
+
+    if (activeTwToken) {
+      getBalance()
+    }
+  }, [activeTwToken])
+
+  useEffect(() => {
+    const url = builder.image(selectedToken.Logo.asset._ref).url()
+    setImageUrl(url)
+  }, [selectedToken, builder])
+
+  const sendCrypto = async () => {
+    console.log('sending crypto')
+
+    if (activeTwToken && amount && recipient) {
+      setAction('transferring')
+      const result = await activeTwToken.transfer(
+        recipient,
+        amount.toString().concat('000000000000000000'),
+      )
+      console.log(result)
+      setAction('transferred')
+    } else {
+      console.error('missing data')
+    }
+  }
 
   return (
     <Wrapper>
-        <Amount>
-            <FlexInputContainer>
-                <FlexInput 
-                  placeholder='0' 
-                  type='number' 
-                  value={amount}
-                  onChange={e => setAmount(e.target.value)}
-                />
-                <span>SCEM</span>
-            </FlexInputContainer>
-            <Warning style={{color: amount && '#0a0b0d'}}>
-                Amount is a required field
-            </Warning>
-        </Amount>
-        <TransferForm>
-          <Row>
-            <FieldName>
-              To
-            </FieldName>
+      <Amount>
+        <FlexInputContainer>
+          <FlexInput
+            placeholder='0'
+            type='number'
+            value={amount}
+            onChange={e => setAmount(e.target.value)}
+          />
+          <span>{selectedToken.symbol}</span>
+        </FlexInputContainer>
+        <Warning style={{ color: amount && '#0a0b0d' }}>
+          Amount is a required field
+        </Warning>
+      </Amount>
+      <TransferForm>
+        <Row>
+          <FieldName>To</FieldName>
+          <Icon>
+            <FaWallet />
+          </Icon>
+          <Recipient
+            placeholder='Address'
+            value={recipient}
+            onChange={e => setRecipient(e.target.value)}
+          />
+        </Row>
+        <Divider />
+        <Row>
+          <FieldName>Pay with</FieldName>
+          <CoinSelectList onClick={() => setAction('select')}>
             <Icon>
-              <FaWallet />
+              <img src={imageUrl} alt={selectedToken.name} />
             </Icon>
-            <Recipient 
-              placeholder='Address' 
-              value={recipient}
-              onChange={e => setRecipient(e.target.value)}
-            />
-          </Row>
-          <Divider/>
-          <Row>
-            <FieldName>
-              Pay With
-            </FieldName>
-            <CoinSelectList>
-              <Icon>
-                <img src="../../assets/CAMPUS.png" alt='image' srcSet='../../assets/CAMPUS.png'/>
-              </Icon>
-              <CoinName>Ethereum</CoinName>
-            </CoinSelectList>
-          </Row>
-        </TransferForm>
-        <Row>
-          <Continue>
-            Continue
-          </Continue>
+            <CoinName>{selectedToken.name}</CoinName>
+          </CoinSelectList>
         </Row>
-        <Row>
-          <BalanceTitle>
-            ETH Balance
-          </BalanceTitle>
-          <Balance>1.20 ETH</Balance>
-        </Row>
-
+      </TransferForm>
+      <Row>
+        <Continue onClick={() => sendCrypto()}>Continue</Continue>
+      </Row>
+      <Row>
+        <BalanceTitle>{selectedToken.symbol} Balance</BalanceTitle>
+        <Balance>
+          {balance} {selectedToken.symbol}
+        </Balance>
+      </Row>
     </Wrapper>
   )
 }

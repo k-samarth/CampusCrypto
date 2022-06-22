@@ -1,41 +1,110 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 import Transfer from './Transfer'
+import CoinSelector from './CoinSelector'
+import {TailSpin} from 'react-loader-spinner'
+import Receive from './Receive'
 
-const TransferModal = () => {
-    const [action, setAction] = useState('send')
+const TransferModal = ({ twTokens, sanityTokens, walletAddress }) => {
+  const [action, setAction] = useState('send')
+  const [selectedToken, setSelectedToken] = useState(sanityTokens[0])
 
-    const selectedStyle = {
-        color: '#3773f5',
+  const selectedStyle = {
+    color: '#3773f5',
+  }
+
+  const unselectedStyle = {
+    border: '1px solid #282b2f',
+  }
+
+  const renderLogic = () => {
+    if (action === 'send') {
+      return (
+        <Transfer
+          setAction={setAction}
+          twTokens={twTokens}
+          sanityTokens={sanityTokens}
+          selectedToken={selectedToken}
+          walletAddress={walletAddress}
+        />
+      )
+    } else if (action === 'receive') {
+      return (
+        <Receive
+          setAction={setAction}
+          selectedToken={selectedToken}
+          walletAddress={walletAddress}
+        />
+      )
+    } else if (action === 'select') {
+      return (
+        <CoinSelector
+          setAction={setAction}
+          selectedToken={selectedToken}
+          setSelectedToken={setSelectedToken}
+          sanityTokens={sanityTokens}
+          twTokens={twTokens}
+          walletAddress={walletAddress}
+        />
+      )
+    } else if (action === 'transferring') {
+      return (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            fontSize: '1.5rem',
+          }}
+        >
+          Transfer in progress...
+          <TailSpin
+            height= '100'
+            width= '100'
+            color='white'
+            ariaLabel='loading'
+          />
+        </div>
+      )
+    } else if (action === 'transferred') {
+      return (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            fontSize: '2rem',
+            fontWeight: '600',
+            color: '#27ad75',
+          }}
+        >
+          Transfer complete
+        </div>
+      )
     }
+  }
 
-    const unselectedStyle = {
-        border: '1px solid #282b2f'
-    }
-
-    const selectedModal = option => {
-        switch (option){
-            case 'send':
-                return <Transfer />
-            case 'receive':
-                return <h2>Receive</h2>
-            default:
-                return <h2>cd</h2>
-        }
-    }
   return (
     <Wrapper>
-        <Selector>
-            <Option style={action == 'send' ? selectedStyle : unselectedStyle} onClick={()=> setAction('send')}>
-            <p>send</p>
-            </Option>
-            <Option style={action == 'receive' ? selectedStyle : unselectedStyle} onClick={()=> setAction('receive')}>
-            <p>receive</p>
-            </Option>
-        </Selector>
-        <ModalMain>
-            {selectedModal(action)}
-        </ModalMain>
+      <Selector>
+        <Option
+          style={action === 'send' ? selectedStyle : unselectedStyle}
+          onClick={() => setAction('send')}
+        >
+          <p>Send</p>
+        </Option>
+        <Option
+          style={action === 'receive' ? selectedStyle : unselectedStyle}
+          onClick={() => setAction('receive')}
+        >
+          <p>Receive</p>
+        </Option>
+      </Selector>
+      <ModalMain>{renderLogic()}</ModalMain>
     </Wrapper>
   )
 }
